@@ -1,8 +1,9 @@
-FROM centos:7
+FROM local/c7-systemd
 MAINTAINER "Richard Magahiz" <richard.magahiz@daqri.com>
-ENV container = docker
 
-RUN yum -y install epel-release; rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch
+RUN rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch 
+RUN yum -y update && \
+  yum -y install epel-release
 COPY elasticsearch.repo /etc/yum.repos.d/
 RUN rpm -ivh https://s3-us-west-2.amazonaws.com/org.mozilla.crash-stats.packages-public/el/7/noarch/socorro-public-repo-1-1.el7.centos.noarch.rpm && \
   yum -y install consul \
@@ -13,10 +14,7 @@ RUN rpm -ivh https://s3-us-west-2.amazonaws.com/org.mozilla.crash-stats.packages
     python-virtualenv \
     socorro  && \
   systemctl enable nginx elasticsearch 
-#RUN  systemctl start nginx 
-#RUN systemctl start elasticsearch
 COPY server.json /etc/consul/
-#RUN systemctl restart consul && \
 RUN  mkdir /root/socorro-config && \
   mkdir /root/symboldir
 COPY collector.conf /root/socorro-config/

@@ -1,0 +1,2 @@
+#!/bin/bash
+docker run -d --privileged -p 80:80 -v /root/symboldir:/home/docker/socorro/symboldir --name socorro socorro
